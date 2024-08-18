@@ -1,6 +1,6 @@
 import {StyleSheet, Alert, View, Text, TextInput, Button} from 'react-native';
 import React, {useState} from "react";
-import {Stack, useRouter} from "expo-router";
+import {Href, Stack, useRouter} from "expo-router";
 import {ThemedView} from "@/components/ThemedView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {fetchJwtToken} from "@/services/authService";
@@ -19,7 +19,7 @@ export default function LoginScreen() {
             const token = await fetchJwtToken(username, password);
             if (token) {
                 await AsyncStorage.setItem('authToken', token);
-                router.replace('(tabs)');
+                router.replace('(tabs)' as Href);
             } else {
                 setModalMessage('Login failed. Please check your credentials.');
                 setModalVisible(true);
