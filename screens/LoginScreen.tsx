@@ -1,4 +1,4 @@
-import {StyleSheet, Alert, View, Text, TextInput, Button} from 'react-native';
+import {StyleSheet, Alert, View, Text, TextInput, Button, ActivityIndicator} from 'react-native';
 import React, {useState} from "react";
 import {Href, Stack, useRouter} from "expo-router";
 import {ThemedView} from "@/components/ThemedView";
@@ -13,8 +13,12 @@ export default function LoginScreen() {
     const [password, setPassword] = useState<string>('');
     const [isModalVisible, setModalVisible] = useState<boolean>(false); // 모달 상태
     const [modalMessage, setModalMessage] = useState<string>(''); // 모달에 표시할 메시지
+    const [isLoading, setLoading] = useState<boolean>(false); // 로딩 상태
 
     const handleLogin = async () => {
+        setLoading(true); // 로딩 시작
+        setModalVisible(true);
+
         try {
             const token = await fetchJwtToken(username, password);
             if (token) {
@@ -22,11 +26,11 @@ export default function LoginScreen() {
                 router.replace('(tabs)' as Href);
             } else {
                 setModalMessage('Login failed. Please check your credentials.');
-                setModalVisible(true);
             }
         } catch (error) {
-            setModalMessage('Unknown error raised.');
-            setModalVisible(true);
+            setModalMessage('Unknown error occurred.');
+        } finally {
+            setLoading(false); // 로딩 종료
         }
     };
 
@@ -55,9 +59,11 @@ export default function LoginScreen() {
 
                 <CustomModal
                     visible={isModalVisible}
-                    message={modalMessage}
+                    message={isLoading ? '' : modalMessage}
                     onClose={() => setModalVisible(false)}
-                />
+                >
+                    {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+                </CustomModal>
             </ThemedView>
         </>
     );
