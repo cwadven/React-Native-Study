@@ -12,7 +12,7 @@ export default function CustomModal({visible, message, onClose, children}: Custo
     return (
         <Modal
             transparent={true}
-            animationType="slide"
+            animationType="fade"
             visible={visible}
             onRequestClose={onClose}
         >
@@ -20,7 +20,7 @@ export default function CustomModal({visible, message, onClose, children}: Custo
                 <View style={styles.modalContainer}>
                     {children}
                     {message && <Text style={styles.modalMessage}>{message}</Text>}
-                    {message && !children && <Button title="Close" onPress={onClose} />}
+                    {message && !children && <Button title="닫기" onPress={onClose} />}
                 </View>
             </View>
         </Modal>

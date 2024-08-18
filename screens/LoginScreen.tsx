@@ -25,10 +25,10 @@ export default function LoginScreen() {
                 await AsyncStorage.setItem('authToken', token);
                 router.replace('(tabs)' as Href);
             } else {
-                setModalMessage('Login failed. Please check your credentials.');
+                setModalMessage('아이디 및 비밀번호\n정보가 일치하지 않습니다.');
             }
         } catch (error) {
-            setModalMessage('Unknown error occurred.');
+            setModalMessage('예기치 못한 오류가 발생했습니다.');
         } finally {
             setLoading(false); // 로딩 종료
         }
@@ -36,17 +36,17 @@ export default function LoginScreen() {
 
     return (
         <>
-            <Stack.Screen options={{title: 'Login'}}/>
+            <Stack.Screen options={{title: 'Checker'}}/>
             <ThemedView style={styles.container}>
                 <View style={styles.container}>
-                    <Text style={styles.label}>Username:</Text>
+                    <Text style={styles.label}>아이디:</Text>
                     <TextInput
                         style={styles.input}
                         value={username}
                         onChangeText={setUsername}
                         placeholder="Enter username"
                     />
-                    <Text style={styles.label}>Password:</Text>
+                    <Text style={styles.label}>비밀번호:</Text>
                     <TextInput
                         style={styles.input}
                         value={password}
@@ -54,7 +54,7 @@ export default function LoginScreen() {
                         placeholder="Enter password"
                         secureTextEntry
                     />
-                    <Button title="Login" onPress={handleLogin}/>
+                    <Button title="로그인" onPress={handleLogin}/>
                 </View>
 
                 <CustomModal
@@ -62,7 +62,11 @@ export default function LoginScreen() {
                     message={isLoading ? '' : modalMessage}
                     onClose={() => setModalVisible(false)}
                 >
-                    {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+                    {isLoading && <View>
+                        <Text style={styles.label}>로그인 중</Text>
+                        <ActivityIndicator size="large" color="#0000ff"/>
+                    </View>
+                    }
                 </CustomModal>
             </ThemedView>
         </>

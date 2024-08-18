@@ -17,7 +17,6 @@ export async function fetchJwtToken(username: string, password: string): Promise
             await AsyncStorage.setItem('authToken', access_token);
             return access_token;
         } else {
-            console.error('Failed to login:', response.statusText);
             return null;
         }
     } catch (error) {
