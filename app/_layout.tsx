@@ -1,5 +1,5 @@
 import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
-import {Stack, useRouter, useSegments} from 'expo-router';
+import {Stack, useRouter, useSegments, Href} from 'expo-router';
 import 'react-native-reanimated';
 
 import {useColorScheme} from '@/hooks/useColorScheme';
@@ -18,13 +18,11 @@ export default function RootLayout() {
 
             try {
                 const token = await AsyncStorage.getItem('authToken');
-                console.log(token)
                 if (!token) {
-                    router.replace('login');
+                    router.replace('login' as Href);
                 }
             } catch (error) {
-                console.error('Failed to retrieve token:', error);
-                router.replace('login');
+                router.replace('login' as Href);
             }
         };
 
