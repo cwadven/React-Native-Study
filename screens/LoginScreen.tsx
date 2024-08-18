@@ -1,30 +1,32 @@
 import {StyleSheet, Alert, View, Text, TextInput, Button} from 'react-native';
 import React, {useState} from "react";
-import {Stack, useNavigation} from "expo-router";
+import {Stack, useRouter} from "expo-router";
 import {ThemedView} from "@/components/ThemedView";
-import {NavigationProp} from "@react-navigation/native";
-
-type RootStackParamList = {
-    '(tabs)': undefined;
-    '+not-found': undefined;
-};
-
-
-type LoginScreenNavigationProp = NavigationProp<RootStackParamList, '(tabs)'>;
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {fetchJwtToken} from "@/services/authService";
+import CustomModal from "@/components/CustomModal";
 
 
 export default function LoginScreen() {
-    const navigation = useNavigation<LoginScreenNavigationProp>(); // 네비게이션 훅 사용
+    const router = useRouter();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [isModalVisible, setModalVisible] = useState<boolean>(false); // 모달 상태
+    const [modalMessage, setModalMessage] = useState<string>(''); // 모달에 표시할 메시지
 
     const handleLogin = async () => {
         try {
-            // const token = await login(username, password);
-            Alert.alert('Success', 'Logged in successfully!');
-            navigation.navigate('(tabs)'); // 로그인 성공 시 tabs로 이동
+            const token = await fetchJwtToken(username, password);
+            if (token) {
+                await AsyncStorage.setItem('authToken', token);
+                router.replace('(tabs)');
+            } else {
+                setModalMessage('Login failed. Please check your credentials.');
+                setModalVisible(true);
+            }
         } catch (error) {
-            Alert.alert('Error', 'Login failed. Please check your credentials.');
+            setModalMessage('Unknown error raised.');
+            setModalVisible(true);
         }
     };
 
@@ -50,6 +52,12 @@ export default function LoginScreen() {
                     />
                     <Button title="Login" onPress={handleLogin}/>
                 </View>
+
+                <CustomModal
+                    visible={isModalVisible}
+                    message={modalMessage}
+                    onClose={() => setModalVisible(false)}
+                />
             </ThemedView>
         </>
     );
