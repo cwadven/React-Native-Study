@@ -23,7 +23,7 @@ export default function LoginScreen() {
             const token = await fetchJwtToken(username, password);
             if (token) {
                 await AsyncStorage.setItem('authToken', token);
-                router.replace('(tabs)' as Href);
+                router.replace('/(tabs)/home' as Href);
             } else {
                 setModalMessage('아이디 및 비밀번호\n정보가 일치하지 않습니다.');
             }
